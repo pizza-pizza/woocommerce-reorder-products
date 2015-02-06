@@ -85,13 +85,17 @@ class wcReorderProducts {
 
 					$.post(ajaxurl + '?action=get_prior_cust_orders',{userID:$('#customer_user').val()},function(r){
 						$('#wc_reorder_products_loading').hide();
-						$('#wc_reorder_products_submit').show();
-						$('#wc_reorder_products_start').after('');
+						var orders = JSON.parse(r);
 
-						$('#wc_reorder_products_start').after('<select id="wc_reorder_products_orderlist"></select> &nbsp;');
-						$.each(JSON.parse(r),function(i,order){
-							if(order.ID != woocommerce_admin_meta_boxes.post_id) $('#wc_reorder_products_orderlist').append('<option value="' + order.ID + '">' + order.post_title + ' (#' + order.ID + ')</option>');
-						});
+						if(!orders.length){
+							$('#wc_reorder_products_start').after('<select id="wc_reorder_products_orderlist" disabled><option>No orders have been completed for this customer.</option></select> &nbsp;');
+						}else{
+							$('#wc_reorder_products_submit').show();
+							$('#wc_reorder_products_start').after('<select id="wc_reorder_products_orderlist"></select> &nbsp;');
+							$.each(JSON.parse(r),function(i,order){
+								if(order.ID != woocommerce_admin_meta_boxes.post_id) $('#wc_reorder_products_orderlist').append('<option value="' + order.ID + '">' + order.post_title + ' (#' + order.ID + ')</option>');
+							});
+						}
 					});
 				}
 
@@ -118,21 +122,20 @@ class wcReorderProducts {
 								$('table.woocommerce_order_items tbody#order_line_items').append(response);
 
 								if(value.qty > 1){
-									$('table.woocommerce_order_items tbody#order_line_items tr.item:last .quantity').val(value.qty);
+									total = $('table.woocommerce_order_items tbody#order_line_items tr.item:last input.line_total').data('total') * 2;
+									$('table.woocommerce_order_items tbody#order_line_items tr.item:last input.quantity').val(value.qty);
+									$('input.line_total,input.line_subtotal','table.woocommerce_order_items tbody#order_line_items tr.item:last').val(total);
 									resave = true;
 								}
 
 								if(!--count){
 									$('select#add_item_id, #add_item_id_chosen .chosen-choices').css('border-color','').val('');
-									runTipTip();
 									$('select#add_item_id').trigger('chosen:updated');
 									$('#wc_reorder_products_loading').fadeOut();
+									if(resave) $('.wc-order-add-item .save-action').click();
 								}
 							});
 						});
-
-						if(resave) $('.wc-order-add-item .save-action').click();
-
 					});
 
 					clearOrderList();
