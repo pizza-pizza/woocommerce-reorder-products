@@ -26,7 +26,7 @@ class wcReorderProducts {
 	 */
 	public function replication_options() {
 		echo '<div style="padding-top:8px;clear:both;"><a class="button button-primary button-large" href="#" id="wc_reorder_products_start">';
-		echo __( 'Add products from a previous order', 'woocommerce-retail-calculator' ) . '</a>';
+		echo __( 'Add products from a previous order', 'woocommerce-reorder-products' ) . '</a>';
 		echo '<img src="images/loading.gif" style="display:none;padding-top:12px;" id="wc_reorder_products_loading" />';
 		echo '<a style="display:none;margin-top:5px;" class="button button-primary button-large" href="#" id="wc_reorder_products_submit">';
 		echo __( 'Add Products', 'woocommerce-reorder-products' ) . '</a></div>';

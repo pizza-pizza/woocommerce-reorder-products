@@ -1,0 +1,40 @@
+# Copyright (C) 2015 WooCommerce Reorder Products
+# This file is distributed under the same license as the WooCommerce Reorder Products package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Reorder Products 1.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-"
+"reorder-products\n"
+"POT-Creation-Date: 2015-02-06 14:54:01+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: woocommerce-reorder-products.php:29
+msgid "Add products from a previous order"
+msgstr "Produkte einer letzten Bestellung hinzufügen"
+
+#: woocommerce-reorder-products.php:32
+msgid "Add Products"
+msgstr "Produkte hinzufügen"
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Reorder Products"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"A plugin for cloning a previous order's products into a new order within the "
+"admin interface."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "New Order Studios"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://neworderstudios.com/"
+msgstr ""
