@@ -2,7 +2,7 @@
 /*----------------------------------------------------------------------------------------------------------------------
 Plugin Name: WooCommerce Reorder Products
 Description: A plugin for cloning a previous order's products into a new order within the admin interface.
-Version: 1.0
+Version: 1.0.1
 Author: New Order Studios
 Author URI: http://neworderstudios.com/
 ----------------------------------------------------------------------------------------------------------------------*/
@@ -19,6 +19,7 @@ class wcReorderProducts {
 		add_action( 'woocommerce_admin_order_data_after_order_details', array( $this, 'replication_options' ) );
 		add_action( 'wp_ajax_get_prior_cust_orders', array( $this, 'get_prior_orders' ) );
 		add_action( 'wp_ajax_get_order_items', array( $this, 'get_order_items' ) );
+		add_action( 'wp_ajax_get_order_fees', array( $this, 'get_order_fees' ) );
 	}
 
 	/**
@@ -61,6 +62,15 @@ class wcReorderProducts {
 	}
 
 	/**
+	 * Furnish an order's fees as JSON.
+	 */
+	public function get_order_fees() {
+		$order = new WC_Order( $_REQUEST['orderID'] );
+		echo json_encode( $order->get_fees() );
+		die();
+	}
+
+	/**
 	 * AJAX logic.
 	 */
 	private function ajax_logic() {
@@ -97,6 +107,8 @@ class wcReorderProducts {
 							});
 						}
 					});
+
+					return false;
 				}
 
 				function clearOrderList(){
@@ -106,11 +118,13 @@ class wcReorderProducts {
 				}
 
 				function sendCloneRequest(){
-					$.post(ajaxurl + '?action=get_order_items',{orderID:$('#wc_reorder_products_orderlist').val(),userID:$('#customer_user').val()},function(r){
+					var oid = $('#wc_reorder_products_orderlist').val();
+
+					$.post(ajaxurl + '?action=get_order_items',{orderID:oid,userID:$('#customer_user').val()},function(r){
 						$('#wc_reorder_products_loading').hide();
 						var items = JSON.parse(r);
 						var resave = false;
-						var count = items.length;
+						var item_count = Object.keys(items).length;
 						$.each(items, function(index,value) {
 							var data = {
 								action:      'woocommerce_add_order_item',
@@ -128,11 +142,33 @@ class wcReorderProducts {
 									resave = true;
 								}
 
-								if(!--count){
+								if(!--item_count){
 									$('select#add_item_id, #add_item_id_chosen .chosen-choices').css('border-color','').val('');
 									$('select#add_item_id').trigger('chosen:updated');
-									$('#wc_reorder_products_loading').fadeOut();
 									if(resave) $('.wc-order-add-item .save-action').click();
+
+									$.post(ajaxurl + '?action=get_order_fees',{orderID:oid,userID:$('#customer_user').val()},function(r){
+										var fees = JSON.parse(r);
+										if(!Object.keys(fees).length) $('#wc_reorder_products_loading').fadeOut();
+
+										$.each(fees, function(i,v){
+											var data = {
+												action:   'woocommerce_add_order_fee',
+												order_id: woocommerce_admin_meta_boxes.post_id,
+												security: woocommerce_admin_meta_boxes.order_item_nonce
+											};
+
+											$.post(woocommerce_admin_meta_boxes.ajax_url, data, function(response) {
+												$('table.woocommerce_order_items tbody#order_fee_line_items').append(response);
+												
+												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last input[type="text"]:first').val(v.name);
+												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last .line_total').val(v.line_total);
+
+												$('.wc-order-add-item .save-action').click();
+												$('#wc_reorder_products_loading').fadeOut();
+											});
+										});
+									});
 								}
 							});
 						});
@@ -141,6 +177,8 @@ class wcReorderProducts {
 					clearOrderList();
 					$('#wc_reorder_products_start').hide();
 					$('#wc_reorder_products_loading').fadeIn();
+
+					return false;
 				}
 			}
 		});
