@@ -136,7 +136,7 @@ class wcReorderProducts {
 								$('table.woocommerce_order_items tbody#order_line_items').append(response);
 
 								if(value.qty > 1){
-									total = $('table.woocommerce_order_items tbody#order_line_items tr.item:last input.line_total').data('total') * 2;
+									total = $('table.woocommerce_order_items tbody#order_line_items tr.item:last input.line_total').data('total') * value.qty;
 									$('table.woocommerce_order_items tbody#order_line_items tr.item:last input.quantity').val(value.qty);
 									$('input.line_total,input.line_subtotal','table.woocommerce_order_items tbody#order_line_items tr.item:last').val(total);
 									resave = true;
