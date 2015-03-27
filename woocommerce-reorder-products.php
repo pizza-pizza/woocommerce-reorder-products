@@ -74,9 +74,21 @@ class wcReorderProducts {
 	 * AJAX logic.
 	 */
 	private function ajax_logic() {
+		$dec = wc_get_price_decimal_separator();
+		$tho = wc_get_price_thousand_separator();
 		?>
 
 		<script type="text/javascript">
+		function rmCurFormat(v){
+			var symbols = {'<?php echo $dec; ?>':'.','<?php echo $tho; ?>':','};
+			return v.replace(/<?php echo ($dec == '.' ? '\\' : '') . $dec; ?>|<?php echo ($tho == '.' ? '\\' : '') . $tho; ?>/gi, function(matched){ return symbols[matched]; });
+		}
+
+		function addCurFormat(v){
+			var symbols = {'.':'<?php echo $dec; ?>',',':'<?php echo $tho; ?>'};
+			return v.replace(/\.|,/gi, function(matched){ return symbols[matched]; });
+		}
+
 		jQuery('document').ready(function($){
 
 			if($('table.woocommerce_order_items tbody#order_line_items tr.item').length > 0){
@@ -136,7 +148,7 @@ class wcReorderProducts {
 								$('table.woocommerce_order_items tbody#order_line_items').append(response);
 
 								if(value.qty > 1){
-									total = $('table.woocommerce_order_items tbody#order_line_items tr.item:last input.line_total').data('total') * value.qty;
+									total = addCurFormat(rmCurFormat($('table.woocommerce_order_items tbody#order_line_items tr.item:last input.line_total').data('total')) * value.qty);
 									$('table.woocommerce_order_items tbody#order_line_items tr.item:last input.quantity').val(value.qty);
 									$('input.line_total,input.line_subtotal','table.woocommerce_order_items tbody#order_line_items tr.item:last').val(total);
 									resave = true;
@@ -162,7 +174,7 @@ class wcReorderProducts {
 												$('table.woocommerce_order_items tbody#order_fee_line_items').append(response);
 												
 												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last input[type="text"]:first').val(v.name);
-												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last .line_total').val(v.line_total);
+												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last .line_total').val(addCurFormat(v.line_total));
 
 												$('.wc-order-add-item .save-action').click();
 												$('#wc_reorder_products_loading').fadeOut();
