@@ -86,7 +86,7 @@ class wcReorderProducts {
 
 		function addCurFormat(v){
 			var symbols = {'.':'<?php echo $dec; ?>',',':'<?php echo $tho; ?>'};
-			return v.replace(/\.|,/gi, function(matched){ return symbols[matched]; });
+			return v.toString().replace(/\.|,/gi, function(matched){ return symbols[matched]; });
 		}
 
 		jQuery('document').ready(function($){
