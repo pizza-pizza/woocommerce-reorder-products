@@ -89,12 +89,12 @@ class wcReorderProducts {
 		?>
 
 		<script type="text/javascript">
-		function rmCurFormat(v){
+		function rpRmCurFormat(v){
 			var symbols = {'<?php echo $dec; ?>':'.','<?php echo $tho; ?>':','};
 			return v.replace(/<?php echo ($dec == '.' ? '\\' : '') . $dec; ?>|<?php echo ($tho == '.' ? '\\' : '') . $tho; ?>/gi, function(matched){ return symbols[matched]; });
 		}
 
-		function addCurFormat(v){
+		function rpAddCurFormat(v){
 			var symbols = {'.':'<?php echo $dec; ?>',',':'<?php echo $tho; ?>'};
 			return v.toString().replace(/\.|,/gi, function(matched){ return symbols[matched]; });
 		}
@@ -158,7 +158,7 @@ class wcReorderProducts {
 								$('table.woocommerce_order_items tbody#order_line_items').append(response);
 
 								if(value.qty > 1){
-									total = addCurFormat(rmCurFormat($('table.woocommerce_order_items tbody#order_line_items tr.item:last input.line_total').data('total')) * value.qty);
+									total = rpAddCurFormat(rpRmCurFormat($('table.woocommerce_order_items tbody#order_line_items tr.item:last input.line_total').data('total')) * value.qty);
 									$('table.woocommerce_order_items tbody#order_line_items tr.item:last input.quantity').val(value.qty);
 									$('input.line_total,input.line_subtotal','table.woocommerce_order_items tbody#order_line_items tr.item:last').val(total);
 									resave = true;
@@ -184,7 +184,7 @@ class wcReorderProducts {
 												$('table.woocommerce_order_items tbody#order_fee_line_items').append(response);
 												
 												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last input[type="text"]:first').val(v.name);
-												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last .line_total').val(addCurFormat(v.line_total));
+												$('table.woocommerce_order_items tbody#order_fee_line_items tr.fee:last .line_total').val(rpAddCurFormat(v.line_total));
 
 												$('.wc-order-add-item .save-action').click();
 												$('#wc_reorder_products_loading').fadeOut();
@@ -210,7 +210,7 @@ class wcReorderProducts {
 
 								$('table.woocommerce_order_items tbody#order_shipping_line_items tr.shipping:last input[type="text"]:first').val(method.name);
 								$('table.woocommerce_order_items tbody#order_shipping_line_items tr.shipping:last select').val(method.method_id);
-								$('table.woocommerce_order_items tbody#order_shipping_line_items tr.shipping:last .line_total').val(addCurFormat(method.cost));
+								$('table.woocommerce_order_items tbody#order_shipping_line_items tr.shipping:last .line_total').val(rpAddCurFormat(method.cost));
 
 								$('.wc-order-add-item .save-action').click();
 							});
