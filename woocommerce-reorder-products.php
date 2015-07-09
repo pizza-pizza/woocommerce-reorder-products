@@ -2,7 +2,7 @@
 /*----------------------------------------------------------------------------------------------------------------------
 Plugin Name: WooCommerce Reorder Products
 Description: A plugin for cloning a previous order's products into a new order within the admin interface.
-Version: 1.0.1
+Version: 1.1.0
 Author: New Order Studios
 Author URI: http://neworderstudios.com/
 ----------------------------------------------------------------------------------------------------------------------*/
@@ -106,10 +106,6 @@ class wcReorderProducts {
 				$('#wc_reorder_products_start').remove();
 
 			}else{
-
-				$('#wc_reorder_products_start').click(setupOrderList);
-				$('#wc_reorder_products_submit').click(sendCloneRequest);
-				$('#customer_user').change(clearOrderList);
 
 				function setupOrderList(){
 					$('#wc_reorder_products_start').hide();
@@ -223,6 +219,10 @@ class wcReorderProducts {
 
 					return false;
 				}
+
+				$('#wc_reorder_products_start').click(setupOrderList);
+				$('#wc_reorder_products_submit').click(sendCloneRequest);
+				$('#customer_user').change(clearOrderList);
 			}
 		});
 		</script>
